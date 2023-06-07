@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Minecraft", "Minecraft.vcxproj", "{B9EDA9C6-487B-454C-A434-7310A020E049}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Dist|x64 = Dist|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9EDA9C6-487B-454C-A434-7310A020E049}.Debug|x64.ActiveCfg = Debug|x64
+		{B9EDA9C6-487B-454C-A434-7310A020E049}.Debug|x64.Build.0 = Debug|x64
+		{B9EDA9C6-487B-454C-A434-7310A020E049}.Dist|x64.ActiveCfg = Dist|x64
+		{B9EDA9C6-487B-454C-A434-7310A020E049}.Dist|x64.Build.0 = Dist|x64
+		{B9EDA9C6-487B-454C-A434-7310A020E049}.Release|x64.ActiveCfg = Release|x64
+		{B9EDA9C6-487B-454C-A434-7310A020E049}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD82A431-8B66-4F6E-B72E-ACF7625122F1}
+	EndGlobalSection
+EndGlobal
