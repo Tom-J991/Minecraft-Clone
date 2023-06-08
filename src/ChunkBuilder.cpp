@@ -50,8 +50,8 @@ void ChunkBuilder::Create()
 		{
 			for (int z = 0; z < m_chunkSize; z++)
 			{
-				const float noiseScale = 0.1f;
-				float noiseMap = fnlGetNoise2D(&noise, x*noiseScale, z*noiseScale);
+				const float noiseScale = 0.5f;
+				float noiseMap = fnlGetNoise2D(&noise, m_chunkPos.x+x*noiseScale, m_chunkPos.z+z*noiseScale);
 				float height = (m_chunkHeight * 0.5f) * noiseMap;
 
 				m_blocks[x][y][z].SetDraw(true);
@@ -68,6 +68,22 @@ void ChunkBuilder::Create()
 					m_blocks[x][y][z].SetDraw(false);
 					m_blocks[x][y][z].SetBlockType(eBLOCKS::NONE);
 				}
+				/*m_blocks[x][y][z].SetDraw(true);
+				float height = std::sqrtf(
+					(x - m_chunkSize/2) * (x - m_chunkSize/2) +
+					(y - m_chunkHeight/2) * (y - m_chunkHeight/2) +
+					(z - m_chunkSize/2) * (z - m_chunkSize/2));
+				if (height <= m_chunkHeight/2)
+				{
+					m_blocks[x][y][z].SetBlockType(eBLOCKS::DIRT);
+					if (y <= (m_chunkHeight/2))
+						m_blocks[x][y][z].SetBlockType(eBLOCKS::STONE);
+				}
+				else
+				{
+					m_blocks[x][y][z].SetDraw(false);
+					m_blocks[x][y][z].SetBlockType(eBLOCKS::NONE);
+				}*/
 			}
 		}
 	}
@@ -91,6 +107,13 @@ void ChunkBuilder::CreateCube(float x, float y, float z,
 	glm::vec3 p6 = { xPos - blockSize, yPos - blockSize, zPos - blockSize };
 	glm::vec3 p7 = { xPos - blockSize, yPos + blockSize, zPos - blockSize };
 	glm::vec3 p8 = { xPos + blockSize, yPos + blockSize, zPos - blockSize };
+
+	// UV Coordinates
+	const float uvOff = 1.0f/8.0f;
+	glm::vec2 uv1, uv2, uv3, uv4;
+
+	glm::vec3 n1; // Normals
+	float r, g, b, a; // Colors
 
 	// Set Block Texture Sides
 	eBLOCKS blockType = m_blocks[(int)x][(int)y][(int)z].GetBlockType();
@@ -135,102 +158,101 @@ void ChunkBuilder::CreateCube(float x, float y, float z,
 		} break;
 	}
 
-	// UV Coordinates
-	const float uvOff = 1.0f/8.0f;
-	glm::vec2 uv1, uv2, uv3, uv4;
-
-	glm::vec3 n1; // Normals
-
 	// Create Mesh
 	unsigned int v1, v2, v3, v4, v5, v6, v7, v8;
-
 	// Front
 	if (zPositiveVisible == false)
 	{
+		r = 1.0f; g = 1.0f; b = 1.0f; a = 1.0f;
 		n1 = { 0.0f, 0.0f, 1.0f };
 		uv1 = { (float)(frontIndex%8)/8, uvOff+(float)(frontIndex/8)/8 };
 		uv2 = { uvOff+(float)(frontIndex%8)/8, uvOff+(float)(frontIndex/8)/8 };
 		uv3 = { uvOff+(float)(frontIndex%8)/8, (float)(frontIndex/8)/8 };
 		uv4 = { (float)(frontIndex%8)/8, (float)(frontIndex/8)/8 };
-		v1 = AddVertex(p1, n1, uv1);
-		v2 = AddVertex(p2, n1, uv2);
-		v3 = AddVertex(p3, n1, uv3);
-		v4 = AddVertex(p4, n1, uv4);
+		v1 = AddVertex(p1, n1, uv1, r, g, b, a);
+		v2 = AddVertex(p2, n1, uv2, r, g, b, a);
+		v3 = AddVertex(p3, n1, uv3, r, g, b, a);
+		v4 = AddVertex(p4, n1, uv4, r, g, b, a);
 		AddTriangle(v1, v2, v3); // Tri 1
 		AddTriangle(v1, v3, v4); // Tri 2
 	}
 	// Back
 	if (zNegativeVisible == false)
 	{
+		r = 1.0f; g = 1.0f; b = 1.0f; a = 1.0f;
 		n1 = { 0.0f, 0.0f, -1.0f };
 		uv1 = { (float)(backIndex%8)/8, uvOff+(float)(backIndex/8)/8 };
 		uv2 = { uvOff+(float)(backIndex%8)/8, uvOff+(float)(backIndex/8)/8 };
 		uv3 = { uvOff+(float)(backIndex%8)/8, (float)(backIndex/8)/8 };
 		uv4 = { (float)(backIndex%8)/8, (float)(backIndex/8)/8 };
-		v5 = AddVertex(p5, n1, uv1);
-		v6 = AddVertex(p6, n1, uv2);
-		v7 = AddVertex(p7, n1, uv3);
-		v8 = AddVertex(p8, n1, uv4);
+		v5 = AddVertex(p5, n1, uv1, r, g, b, a);
+		v6 = AddVertex(p6, n1, uv2, r, g, b, a);
+		v7 = AddVertex(p7, n1, uv3, r, g, b, a);
+		v8 = AddVertex(p8, n1, uv4, r, g, b, a);
 		AddTriangle(v5, v6, v7); // Tri 1
 		AddTriangle(v5, v7, v8); // Tri 2
 	}
 	// Right
 	if (xPositiveVisible == false)
 	{
+		r = 1.0f; g = 1.0f; b = 1.0f; a = 1.0f;
 		n1 ={ 1.0f, 0.0f, 0.0f };
 		uv1 ={ (float)(rightIndex%8)/8, uvOff+(float)(rightIndex/8)/8 };
 		uv2 ={ uvOff+(float)(rightIndex%8)/8, uvOff+(float)(rightIndex/8)/8 };
 		uv3 ={ uvOff+(float)(rightIndex%8)/8, (float)(rightIndex/8)/8 };
 		uv4 ={ (float)(rightIndex%8)/8, (float)(rightIndex/8)/8 };
-		v2 = AddVertex(p2, n1, uv1);
-		v5 = AddVertex(p5, n1, uv2);
-		v8 = AddVertex(p8, n1, uv3);
-		v3 = AddVertex(p3, n1, uv4);
+		v2 = AddVertex(p2, n1, uv1, r, g, b, a);
+		v5 = AddVertex(p5, n1, uv2, r, g, b, a);
+		v8 = AddVertex(p8, n1, uv3, r, g, b, a);
+		v3 = AddVertex(p3, n1, uv4, r, g, b, a);
 		AddTriangle(v2, v5, v8); // Tri 1
 		AddTriangle(v2, v8, v3); // Tri 2
 	}
 	// Left
 	if (xNegativeVisible == false)
 	{
+		r = 1.0f; g = 1.0f; b = 1.0f; a = 1.0f;
 		n1 ={ -1.0f, 0.0f, 0.0f };
 		uv1 ={ (float)(leftIndex%8)/8, uvOff+(float)(leftIndex/8)/8 };
 		uv2 ={ uvOff+(float)(leftIndex%8)/8, uvOff+(float)(leftIndex/8)/8 };
 		uv3 ={ uvOff+(float)(leftIndex%8)/8, (float)(leftIndex/8)/8 };
 		uv4 ={ (float)(leftIndex%8)/8, (float)(leftIndex/8)/8 };
-		v6 = AddVertex(p6, n1, uv1);
-		v1 = AddVertex(p1, n1, uv2);
-		v4 = AddVertex(p4, n1, uv3);
-		v7 = AddVertex(p7, n1, uv4);
+		v6 = AddVertex(p6, n1, uv1, r, g, b, a);
+		v1 = AddVertex(p1, n1, uv2, r, g, b, a);
+		v4 = AddVertex(p4, n1, uv3, r, g, b, a);
+		v7 = AddVertex(p7, n1, uv4, r, g, b, a);
 		AddTriangle(v6, v1, v4); // Tri 1
 		AddTriangle(v6, v4, v7); // Tri 2
 	}
 	// Top
 	if (yPositiveVisible == false)
 	{
+		r = 1.0f; g = 1.0f; b = 1.0f; a = 1.0f;
 		n1 ={ 0.0f, 1.0f, 0.0f };
 		uv1 ={ (float)(topIndex%8)/8, uvOff+(float)(topIndex/8)/8 };
 		uv2 ={ uvOff+(float)(topIndex%8)/8, uvOff+(float)(topIndex/8)/8 };
 		uv3 ={ uvOff+(float)(topIndex%8)/8, (float)(topIndex/8)/8 };
 		uv4 ={ (float)(topIndex%8)/8, (float)(topIndex/8)/8 };
-		v4 = AddVertex(p4, n1, uv1);
-		v3 = AddVertex(p3, n1, uv2);
-		v8 = AddVertex(p8, n1, uv3);
-		v7 = AddVertex(p7, n1, uv4);
+		v4 = AddVertex(p4, n1, uv1, r, g, b, a);
+		v3 = AddVertex(p3, n1, uv2, r, g, b, a);
+		v8 = AddVertex(p8, n1, uv3, r, g, b, a);
+		v7 = AddVertex(p7, n1, uv4, r, g, b, a);
 		AddTriangle(v4, v3, v8); // Tri 1
 		AddTriangle(v4, v8, v7); // Tri 2
 	}
 	// Bottom
 	if (yNegativeVisible == false)
 	{
+		r = 1.0f; g = 1.0f; b = 1.0f; a = 1.0f;
 		n1 ={ 0.0f, -1.0f, 0.0f };
 		uv1 ={ (float)(bottomIndex%8)/8, uvOff+(float)(bottomIndex/8)/8 };
 		uv2 ={ uvOff+(float)(bottomIndex%8)/8, uvOff+(float)(bottomIndex/8)/8 };
 		uv3 ={ uvOff+(float)(bottomIndex%8)/8, (float)(bottomIndex/8)/8 };
 		uv4 ={ (float)(bottomIndex%8)/8, (float)(bottomIndex/8)/8 };
-		v6 = AddVertex(p6, n1, uv1);
-		v5 = AddVertex(p5, n1, uv2);
-		v2 = AddVertex(p2, n1, uv3);
-		v1 = AddVertex(p1, n1, uv4);
+		v6 = AddVertex(p6, n1, uv1, r, g, b, a);
+		v5 = AddVertex(p5, n1, uv2, r, g, b, a);
+		v2 = AddVertex(p2, n1, uv3, r, g, b, a);
+		v1 = AddVertex(p1, n1, uv4, r, g, b, a);
 		AddTriangle(v6, v5, v2); // Tri 1
 		AddTriangle(v6, v2, v1); // Tri 2
 	}
@@ -274,7 +296,7 @@ void ChunkBuilder::CreateMesh()
 		}
 	}
 
-	m_bufferSize = 3;
+	m_bufferSize = 4;
 	glGenVertexArrays(1, &m_VAO);
 	m_VBO = new unsigned int[m_bufferSize];
 	glGenBuffers(m_bufferSize, m_VBO);
@@ -296,6 +318,11 @@ void ChunkBuilder::CreateMesh()
 	glBufferData(GL_ARRAY_BUFFER, m_uvCoord.size() * sizeof(float), &m_uvCoord[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(2);
+	// Colors
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[3]);
+	glBufferData(GL_ARRAY_BUFFER, m_colors.size() * sizeof(float), &m_colors[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
+	glEnableVertexAttribArray(3);
 
 	glGenBuffers(1, &m_EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
@@ -303,6 +330,15 @@ void ChunkBuilder::CreateMesh()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	m_indicesCount = m_indices.size();
+
+	// Clear vectors
+	std::vector<float>().swap(m_vertices);
+	std::vector<float>().swap(m_normals);
+	std::vector<float>().swap(m_uvCoord);
+	std::vector<float>().swap(m_colors);
+	std::vector<unsigned int>().swap(m_indices);
 }
 
 void ChunkBuilder::Update(float deltaTime)
@@ -321,11 +357,11 @@ void ChunkBuilder::Draw()
 	m_shader->SetInteger("mainTexture", 0);
 
 	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, (GLsizei)m_indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)m_indicesCount, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
-unsigned int ChunkBuilder::AddVertex(glm::vec3 point, glm::vec3 normal, glm::vec2 uvCoords)
+unsigned int ChunkBuilder::AddVertex(glm::vec3 point, glm::vec3 normal, glm::vec2 uvCoords, float r, float g, float b, float a)
 {
 	static int index = -1;
 	index++;
@@ -340,6 +376,11 @@ unsigned int ChunkBuilder::AddVertex(glm::vec3 point, glm::vec3 normal, glm::vec
 
 	m_uvCoord.push_back(uvCoords.x);
 	m_uvCoord.push_back(uvCoords.y);
+
+	m_colors.push_back(r);
+	m_colors.push_back(g);
+	m_colors.push_back(b);
+	m_colors.push_back(a);
 
 	return index;
 }

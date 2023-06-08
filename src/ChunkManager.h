@@ -5,13 +5,20 @@
 
 #include "ChunkBuilder.h"
 
+struct Camera;
+
 class ChunkManager
 {
 public:
 	ChunkManager();
 	~ChunkManager();
 
+	void Update(float deltaTime, Camera& camera);
+
 private:
-	std::vector<ChunkBuilder*> m_chunks;
+
+private:
+	glm::vec3 m_cameraPos;
+	glm::mat4 m_cameraView;
 
 };

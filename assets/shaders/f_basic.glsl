@@ -5,6 +5,7 @@ out vec4 output_color;
 in vec3 Vertices;
 in vec3 Normals;
 in vec2 UVCoord;
+in vec4 Colors;
 
 in vec3 FragPos;
 
@@ -24,5 +25,5 @@ void main()
 
 	vec3 result = vec3(1.0f);
 
-	output_color = vec4(result, 1.0f) * texture(mainTexture, UVCoord);
+	output_color = vec4(result, 1.0f) * texture(mainTexture, UVCoord) * Colors;
 }

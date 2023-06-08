@@ -106,7 +106,7 @@ void Game::Init()
 	m_textureManager->AddTexture("TERRAIN", new Texture("./assets/textures/terrain.png"));
 
 	m_camera = std::make_unique<Camera>(90.0f, (float)m_windowWidth / (float)m_windowHeight, 0.1f, 1000.0f);
-	m_camera->position = { -8.0f, 128.0f, 8.0f };
+	m_camera->position = { -8.0f, 32.0f, 8.0f };
 
 	m_chunk = std::make_unique<ChunkBuilder>(m_shaderManager->GetShader("BASIC_SHADER"), m_textureManager->GetTexture("TERRAIN"));
 	m_chunk->Create();
